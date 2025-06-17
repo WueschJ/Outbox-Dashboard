@@ -2,13 +2,13 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Inbox, Mail, MailOpen } from "lucide-react";
+import { Mail, MailOpen } from "lucide-react";
 
 interface MailSidebarProps {
-  activeSection: 'inbox' | 'sent' | 'draft';
-  onSectionChange: (section: 'inbox' | 'sent' | 'draft') => void;
+  activeSection: 'sent' | 'draft';
+  onSectionChange: (section: 'sent' | 'draft') => void;
   activeCategory: 'f2p' | 'p2f';
-  getUnreadCount: (category: 'f2p' | 'p2f', section: 'inbox' | 'sent' | 'draft') => number;
+  getUnreadCount: (category: 'f2p' | 'p2f', section: 'sent' | 'draft') => number;
 }
 
 const MailSidebar: React.FC<MailSidebarProps> = ({
@@ -18,11 +18,6 @@ const MailSidebar: React.FC<MailSidebarProps> = ({
   getUnreadCount
 }) => {
   const sections = [
-    { 
-      id: 'inbox' as const, 
-      label: 'Inbox', 
-      icon: Inbox 
-    },
     { 
       id: 'sent' as const, 
       label: 'Sent', 

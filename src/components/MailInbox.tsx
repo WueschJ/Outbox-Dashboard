@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Contact, Mail } from "lucide-react";
+import { Contact } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MailList from "./MailList";
 import MailSidebar from "./MailSidebar";
@@ -16,29 +16,29 @@ export type MailType = {
   timestamp: string;
   isRead: boolean;
   category: 'f2p' | 'p2f';
-  type: 'inbox' | 'sent' | 'draft';
+  type: 'sent' | 'draft';
 };
 
 const mockMails: MailType[] = [
   {
     id: '1',
-    sender: 'john@f2p.com',
+    sender: 'me',
     subject: 'Welcome to F2P Platform',
     preview: 'Thank you for joining our free-to-play community...',
     timestamp: '2 hours ago',
-    isRead: false,
+    isRead: true,
     category: 'f2p',
-    type: 'inbox'
+    type: 'sent'
   },
   {
     id: '2',
-    sender: 'sarah@p2f.com',
+    sender: 'me',
     subject: 'Premium Features Available',
     preview: 'Unlock exclusive content with our pay-to-free model...',
     timestamp: '4 hours ago',
     isRead: true,
     category: 'p2f',
-    type: 'inbox'
+    type: 'sent'
   },
   {
     id: '3',
@@ -60,18 +60,28 @@ const mockMails: MailType[] = [
     category: 'p2f',
     type: 'draft'
   },
+  {
+    id: '5',
+    sender: 'me',
+    subject: 'Draft: F2P User Onboarding',
+    preview: 'Welcome to our platform! Here is what you need to know...',
+    timestamp: '3 days ago',
+    isRead: false,
+    category: 'f2p',
+    type: 'draft'
+  },
 ];
 
 const MailInbox = () => {
   const [activeCategory, setActiveCategory] = useState<'f2p' | 'p2f'>('f2p');
-  const [activeSection, setActiveSection] = useState<'inbox' | 'sent' | 'draft'>('inbox');
+  const [activeSection, setActiveSection] = useState<'sent' | 'draft'>('sent');
   const navigate = useNavigate();
 
   const filteredMails = mockMails.filter(mail => 
     mail.category === activeCategory && mail.type === activeSection
   );
 
-  const getUnreadCount = (category: 'f2p' | 'p2f', section: 'inbox' | 'sent' | 'draft') => {
+  const getUnreadCount = (category: 'f2p' | 'p2f', section: 'sent' | 'draft') => {
     return mockMails.filter(mail => 
       mail.category === category && 
       mail.type === section && 
@@ -95,7 +105,7 @@ const MailInbox = () => {
         <div className="bg-white border-b border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">Mail Inbox</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Mail Outbox</h1>
               
               {/* Category Switch */}
               <div className="flex items-center space-x-3 bg-gray-100 rounded-lg p-1">

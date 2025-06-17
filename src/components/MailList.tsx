@@ -5,14 +5,12 @@ import MailItem from './MailItem';
 
 interface MailListProps {
   mails: MailType[];
-  activeSection: 'inbox' | 'sent' | 'draft';
+  activeSection: 'sent' | 'draft';
 }
 
 const MailList: React.FC<MailListProps> = ({ mails, activeSection }) => {
   const getSectionTitle = () => {
     switch (activeSection) {
-      case 'inbox':
-        return 'Inbox';
       case 'sent':
         return 'Sent Mail';
       case 'draft':
