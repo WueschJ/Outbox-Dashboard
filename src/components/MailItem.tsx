@@ -38,12 +38,6 @@ const MailItem: React.FC<MailItemProps> = ({ mail, onSelect }) => {
                   New
                 </Badge>
               )}
-              {mail.reviewTag && (
-                <Badge variant="outline" className="bg-orange-50 border-orange-200 text-orange-700 text-xs flex items-center space-x-1">
-                  <Tag className="h-3 w-3" />
-                  <span>{mail.reviewTag}</span>
-                </Badge>
-              )}
             </div>
             <h3 className={`text-sm font-medium mb-1 truncate ${
               !mail.isRead ? 'text-gray-900' : 'text-gray-700'
@@ -53,6 +47,14 @@ const MailItem: React.FC<MailItemProps> = ({ mail, onSelect }) => {
             <p className="text-sm text-gray-500 truncate">
               {mail.preview}
             </p>
+            {mail.reviewTag && (
+              <div className="mt-2">
+                <Badge variant="outline" className="bg-orange-50 border-orange-200 text-orange-700 text-xs flex items-center space-x-1 w-fit">
+                  <Tag className="h-3 w-3" />
+                  <span>Review: {mail.reviewTag}</span>
+                </Badge>
+              </div>
+            )}
           </div>
           <div className="ml-4 flex-shrink-0">
             <p className="text-xs text-gray-400">
