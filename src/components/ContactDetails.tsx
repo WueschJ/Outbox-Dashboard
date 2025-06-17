@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -10,9 +9,14 @@ import { Mail, User } from "lucide-react";
 interface ContactDetailsProps {
   contact: ContactType | null;
   conversations: ConversationType[];
+  onConversationSelect?: (conversation: ConversationType) => void;
 }
 
-const ContactDetails: React.FC<ContactDetailsProps> = ({ contact, conversations }) => {
+const ContactDetails: React.FC<ContactDetailsProps> = ({ 
+  contact, 
+  conversations, 
+  onConversationSelect 
+}) => {
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -86,7 +90,11 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({ contact, conversations 
               ) : (
                 <div className="space-y-3">
                   {conversations.map((conversation) => (
-                    <Card key={conversation.id} className="border border-gray-200">
+                    <Card 
+                      key={conversation.id} 
+                      className="border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
+                      onClick={() => onConversationSelect && onConversationSelect(conversation)}
+                    >
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
@@ -102,7 +110,7 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({ contact, conversations 
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0">
-                        <p className="text-sm text-gray-600">{conversation.content}</p>
+                        <p className="text-sm text-gray-600 line-clamp-2">{conversation.content}</p>
                       </CardContent>
                     </Card>
                   ))}

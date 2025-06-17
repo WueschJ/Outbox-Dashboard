@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { MailType } from './MailInbox';
 import MailItem from './MailItem';
@@ -6,9 +5,10 @@ import MailItem from './MailItem';
 interface MailListProps {
   mails: MailType[];
   activeSection: 'sent' | 'draft';
+  onMailSelect?: (mail: MailType) => void;
 }
 
-const MailList: React.FC<MailListProps> = ({ mails, activeSection }) => {
+const MailList: React.FC<MailListProps> = ({ mails, activeSection, onMailSelect }) => {
   const getSectionTitle = () => {
     switch (activeSection) {
       case 'sent':
@@ -38,7 +38,11 @@ const MailList: React.FC<MailListProps> = ({ mails, activeSection }) => {
         <h2 className="text-xl font-semibold text-gray-900 mb-4">{getSectionTitle()}</h2>
         <div className="space-y-2">
           {mails.map((mail) => (
-            <MailItem key={mail.id} mail={mail} />
+            <MailItem 
+              key={mail.id} 
+              mail={mail} 
+              onSelect={onMailSelect}
+            />
           ))}
         </div>
       </div>

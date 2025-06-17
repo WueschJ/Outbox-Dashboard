@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,13 +5,23 @@ import { MailType } from './MailInbox';
 
 interface MailItemProps {
   mail: MailType;
+  onSelect?: (mail: MailType) => void;
 }
 
-const MailItem: React.FC<MailItemProps> = ({ mail }) => {
+const MailItem: React.FC<MailItemProps> = ({ mail, onSelect }) => {
+  const handleClick = () => {
+    if (onSelect) {
+      onSelect(mail);
+    }
+  };
+
   return (
-    <Card className={`cursor-pointer transition-all hover:shadow-md ${
-      !mail.isRead ? 'bg-blue-50 border-blue-200' : 'bg-white'
-    }`}>
+    <Card 
+      className={`cursor-pointer transition-all hover:shadow-md ${
+        !mail.isRead ? 'bg-blue-50 border-blue-200' : 'bg-white'
+      }`}
+      onClick={handleClick}
+    >
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">

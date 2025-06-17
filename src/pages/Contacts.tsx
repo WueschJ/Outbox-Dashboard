@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ContactsList from "@/components/ContactsList";
 import ContactDetails from "@/components/ContactDetails";
+import MailDetail from "@/components/MailDetail";
 
 export type ContactType = {
   id: string;
@@ -111,6 +111,7 @@ const Contacts = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<'all' | 'f2p' | 'p2f'>('all');
   const [selectedContact, setSelectedContact] = useState<ContactType | null>(null);
+  const [selectedConversation, setSelectedConversation] = useState<ConversationType | null>(null);
 
   const filteredContacts = mockContacts.filter(contact => {
     const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -118,6 +119,43 @@ const Contacts = () => {
     const matchesCategory = filterCategory === 'all' || contact.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const handleConversationSelect = (conversation: ConversationType) => {
+    // Convert conversation to MailType format for MailDetail component
+    const mailFromConversation = {
+      id: conversation.id,
+      sender: conversation.type === 'sent' ? 'me' : selectedContact?.email || '',
+      subject: conversation.subject,
+      preview: conversation.content,
+      timestamp: conversation.timestamp,
+      isRead: true,
+      category: selectedContact?.category || 'f2p' as const,
+      type: conversation.type === 'sent' ? 'sent' as const : 'sent' as const
+    };
+    setSelectedConversation(conversation);
+  };
+
+  if (selectedConversation) {
+    const mailFromConversation = {
+      id: selectedConversation.id,
+      sender: selectedConversation.type === 'sent' ? 'me' : selectedContact?.email || '',
+      subject: selectedConversation.subject,
+      preview: selectedConversation.content,
+      timestamp: selectedConversation.timestamp,
+      isRead: true,
+      category: selectedContact?.category || 'f2p' as const,
+      type: selectedConversation.type === 'sent' ? 'sent' as const : 'sent' as const
+    };
+
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <MailDetail 
+          mail={mailFromConversation}
+          onBack={() => setSelectedConversation(null)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -179,6 +217,7 @@ const Contacts = () => {
           <ContactDetails 
             contact={selectedContact}
             conversations={selectedContact ? mockConversations[selectedContact.id] || [] : []}
+            onConversationSelect={handleConversationSelect}
           />
         </div>
       </div>
