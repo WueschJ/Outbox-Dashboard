@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import ContactCard from "@/components/ContactCard";
+import ContactsList from "@/components/ContactsList";
+import ContactDetails from "@/components/ContactDetails";
 
 export type ContactType = {
   id: string;
@@ -15,6 +16,15 @@ export type ContactType = {
   totalEmails: number;
   category: 'f2p' | 'p2f';
   avatar?: string;
+};
+
+export type ConversationType = {
+  id: string;
+  subject: string;
+  timestamp: string;
+  type: 'sent' | 'received';
+  preview: string;
+  content: string;
 };
 
 const mockContacts: ContactType[] = [
@@ -65,10 +75,42 @@ const mockContacts: ContactType[] = [
   }
 ];
 
+const mockConversations: { [contactId: string]: ConversationType[] } = {
+  '1': [
+    {
+      id: '1-1',
+      subject: 'Welcome to F2P Platform',
+      timestamp: '2 hours ago',
+      type: 'sent',
+      preview: 'Thank you for joining our free-to-play community...',
+      content: 'Thank you for joining our free-to-play community. We are excited to have you on board!'
+    },
+    {
+      id: '1-2',
+      subject: 'Re: Welcome to F2P Platform',
+      timestamp: '1 hour ago',
+      type: 'received',
+      preview: 'Thanks for the warm welcome...',
+      content: 'Thanks for the warm welcome! I am looking forward to exploring the platform.'
+    }
+  ],
+  '2': [
+    {
+      id: '2-1',
+      subject: 'Premium Features Available',
+      timestamp: '4 hours ago',
+      type: 'sent',
+      preview: 'Unlock exclusive content with our pay-to-free model...',
+      content: 'Unlock exclusive content with our pay-to-free model. Premium features are now available!'
+    }
+  ]
+};
+
 const Contacts = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<'all' | 'f2p' | 'p2f'>('all');
+  const [selectedContact, setSelectedContact] = useState<ContactType | null>(null);
 
   const filteredContacts = mockContacts.filter(contact => {
     const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -125,28 +167,20 @@ const Contacts = () => {
         </div>
       </div>
 
-      <div className="p-6">
-        <div className="mb-4">
-          <p className="text-sm text-gray-600">
-            {filteredContacts.length} contact{filteredContacts.length !== 1 ? 's' : ''} found
-          </p>
+      <div className="flex h-[calc(100vh-200px)]">
+        <div className="w-1/2 border-r border-gray-200">
+          <ContactsList 
+            contacts={filteredContacts}
+            selectedContact={selectedContact}
+            onSelectContact={setSelectedContact}
+          />
         </div>
-        
-        {filteredContacts.length === 0 ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="text-gray-400 text-6xl mb-4">👥</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No contacts found</h3>
-              <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredContacts.map((contact) => (
-              <ContactCard key={contact.id} contact={contact} />
-            ))}
-          </div>
-        )}
+        <div className="w-1/2">
+          <ContactDetails 
+            contact={selectedContact}
+            conversations={selectedContact ? mockConversations[selectedContact.id] || [] : []}
+          />
+        </div>
       </div>
     </div>
   );
