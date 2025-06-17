@@ -17,6 +17,7 @@ export type MailType = {
   isRead: boolean;
   category: 'f2p' | 'p2f';
   type: 'sent' | 'draft';
+  reviewTag?: string;
 };
 
 const mockMails: MailType[] = [
@@ -58,7 +59,8 @@ const mockMails: MailType[] = [
     timestamp: '2 days ago',
     isRead: false,
     category: 'p2f',
-    type: 'draft'
+    type: 'draft',
+    reviewTag: 'manager'
   },
   {
     id: '5',

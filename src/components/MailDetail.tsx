@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,7 +59,8 @@ const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave }) => {
         preview: content,
         type: 'sent' as const,
         timestamp: 'now',
-        isRead: true
+        isRead: true,
+        reviewTag: undefined // Remove review tag when sent
       };
       onSave(updatedMail);
     }
@@ -79,6 +79,17 @@ const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave }) => {
         variant: "destructive"
       });
       return;
+    }
+    
+    if (onSave) {
+      const updatedMail = {
+        ...mail,
+        subject,
+        preview: content,
+        reviewTag,
+        timestamp: 'now'
+      };
+      onSave(updatedMail);
     }
     
     toast({
@@ -114,6 +125,12 @@ const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave }) => {
             >
               {mail.category.toUpperCase()}
             </Badge>
+            {mail.reviewTag && (
+              <Badge variant="outline" className="bg-orange-50 border-orange-200 text-orange-700 flex items-center space-x-1">
+                <Tag className="h-3 w-3" />
+                <span>Review: {mail.reviewTag}</span>
+              </Badge>
+            )}
           </div>
         </div>
 

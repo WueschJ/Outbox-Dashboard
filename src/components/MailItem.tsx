@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tag } from "lucide-react";
 import { MailType } from './MailInbox';
 
 interface MailItemProps {
@@ -34,6 +36,12 @@ const MailItem: React.FC<MailItemProps> = ({ mail, onSelect }) => {
               {!mail.isRead && (
                 <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs">
                   New
+                </Badge>
+              )}
+              {mail.reviewTag && (
+                <Badge variant="outline" className="bg-orange-50 border-orange-200 text-orange-700 text-xs flex items-center space-x-1">
+                  <Tag className="h-3 w-3" />
+                  <span>{mail.reviewTag}</span>
                 </Badge>
               )}
             </div>
