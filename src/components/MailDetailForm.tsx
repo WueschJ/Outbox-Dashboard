@@ -107,9 +107,10 @@ const MailDetailForm: React.FC<MailDetailFormProps> = ({
               <SelectValue placeholder="Select reviewer" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="manager">Manager</SelectItem>
-              <SelectItem value="legal">Legal Team</SelectItem>
-              <SelectItem value="marketing">Marketing</SelectItem>
+              <SelectItem value="Noah">Noah</SelectItem>
+              <SelectItem value="Johanna">Johanna</SelectItem>
+              <SelectItem value="Zied">Zied</SelectItem>
+              <SelectItem value="Chris">Chris</SelectItem>
             </SelectContent>
           </Select>
           <Button 
