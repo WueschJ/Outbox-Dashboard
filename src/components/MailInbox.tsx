@@ -174,6 +174,7 @@ const MailInbox = () => {
               mails={filteredMails} 
               activeSection={activeSection}
               onMailSelect={handleMailSelect}
+              onMailDelete={handleMailDelete}
             />
           </>
         ) : (

@@ -2,18 +2,42 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tag } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tag, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { MailType } from './MailInbox';
 
 interface MailItemProps {
   mail: MailType;
   onSelect?: (mail: MailType) => void;
+  onDelete?: (mailId: string) => void;
 }
 
-const MailItem: React.FC<MailItemProps> = ({ mail, onSelect }) => {
-  const handleClick = () => {
+const MailItem: React.FC<MailItemProps> = ({ mail, onSelect, onDelete }) => {
+  const handleClick = (e: React.MouseEvent) => {
+    // Don't trigger mail selection if clicking on delete button
+    if ((e.target as HTMLElement).closest('.delete-button')) {
+      return;
+    }
+    
     if (onSelect) {
       onSelect(mail);
+    }
+  };
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(mail.id);
     }
   };
 
@@ -56,10 +80,36 @@ const MailItem: React.FC<MailItemProps> = ({ mail, onSelect }) => {
               </div>
             )}
           </div>
-          <div className="ml-4 flex-shrink-0">
+          <div className="ml-4 flex-shrink-0 flex items-center space-x-2">
             <p className="text-xs text-gray-400">
               {mail.timestamp}
             </p>
+            {mail.type === 'draft' && onDelete && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="delete-button h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Draft</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete this draft? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
         </div>
       </CardContent>

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { MailType } from './MailInbox';
 import MailItem from './MailItem';
@@ -6,9 +7,10 @@ interface MailListProps {
   mails: MailType[];
   activeSection: 'sent' | 'draft';
   onMailSelect?: (mail: MailType) => void;
+  onMailDelete?: (mailId: string) => void;
 }
 
-const MailList: React.FC<MailListProps> = ({ mails, activeSection, onMailSelect }) => {
+const MailList: React.FC<MailListProps> = ({ mails, activeSection, onMailSelect, onMailDelete }) => {
   const getSectionTitle = () => {
     switch (activeSection) {
       case 'sent':
@@ -42,6 +44,7 @@ const MailList: React.FC<MailListProps> = ({ mails, activeSection, onMailSelect 
               key={mail.id} 
               mail={mail} 
               onSelect={onMailSelect}
+              onDelete={onMailDelete}
             />
           ))}
         </div>
