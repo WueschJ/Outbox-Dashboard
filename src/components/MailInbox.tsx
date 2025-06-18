@@ -105,6 +105,11 @@ const MailInbox = () => {
     );
   };
 
+  const handleMailDelete = (mailId: string) => {
+    setMails(prevMails => prevMails.filter(mail => mail.id !== mailId));
+    setSelectedMail(null);
+  };
+
   return (
     <div className="h-screen flex">
       {/* Sidebar */}
@@ -176,6 +181,7 @@ const MailInbox = () => {
             mail={selectedMail}
             onBack={() => setSelectedMail(null)}
             onSave={handleMailSave}
+            onDelete={handleMailDelete}
           />
         )}
       </div>

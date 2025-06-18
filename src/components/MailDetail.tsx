@@ -6,21 +6,34 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Save, Send, Edit, Tag } from "lucide-react";
+import { ArrowLeft, Save, Send, Edit, Tag, Trash2 } from "lucide-react";
 import { MailType } from './MailInbox';
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface MailDetailProps {
   mail: MailType | null;
   onBack: () => void;
   onSave?: (updatedMail: MailType) => void;
+  onDelete?: (mailId: string) => void;
 }
 
-const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave }) => {
+const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [subject, setSubject] = useState(mail?.subject || '');
   const [content, setContent] = useState(mail?.preview || '');
   const [recipient, setRecipient] = useState(mail?.sender === 'me' ? '' : mail?.sender || '');
+  const [sender, setSender] = useState(mail?.sender || 'Noah');
   const [reviewTag, setReviewTag] = useState('');
   const { toast } = useToast();
 
@@ -41,6 +54,7 @@ const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave }) => {
         ...mail,
         subject,
         preview: content,
+        sender,
         timestamp: 'now'
       };
       onSave(updatedMail);
@@ -58,6 +72,7 @@ const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave }) => {
         ...mail,
         subject,
         preview: content,
+        sender,
         type: 'sent' as const,
         timestamp: 'now',
         isRead: true,
@@ -87,6 +102,7 @@ const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave }) => {
         ...mail,
         subject,
         preview: content,
+        sender,
         reviewTag,
         timestamp: 'now'
       };
@@ -97,6 +113,17 @@ const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave }) => {
       title: "Tagged for review",
       description: `Draft has been tagged for review by ${reviewTag}.`,
     });
+  };
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(mail.id);
+      onBack();
+      toast({
+        title: "Draft deleted",
+        description: "The draft has been deleted successfully.",
+      });
+    }
   };
 
   return (
@@ -135,15 +162,43 @@ const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave }) => {
           </div>
         </div>
 
-        {canEdit && !isEditing && (
-          <Button 
-            onClick={() => setIsEditing(true)}
-            className="flex items-center space-x-2"
-          >
-            <Edit className="h-4 w-4" />
-            <span>Edit Draft</span>
-          </Button>
-        )}
+        <div className="flex items-center space-x-2">
+          {canEdit && !isEditing && (
+            <Button 
+              onClick={() => setIsEditing(true)}
+              className="flex items-center space-x-2"
+            >
+              <Edit className="h-4 w-4" />
+              <span>Edit Draft</span>
+            </Button>
+          )}
+          
+          {isDraft && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="destructive"
+                  className="flex items-center space-x-2"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span>Delete Draft</span>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete the draft.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+        </div>
       </div>
 
       {/* Content */}
@@ -155,6 +210,23 @@ const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave }) => {
           <CardContent className="space-y-4">
             {isEditing ? (
               <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Sender
+                  </label>
+                  <Select value={sender} onValueChange={setSender}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select sender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Noah">Noah</SelectItem>
+                      <SelectItem value="Johanna">Johanna</SelectItem>
+                      <SelectItem value="Zied">Zied</SelectItem>
+                      <SelectItem value="Chris">Chris</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Recipient
@@ -230,6 +302,13 @@ const MailDetail: React.FC<MailDetailProps> = ({ mail, onBack, onSave }) => {
               </>
             ) : (
               <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    From
+                  </label>
+                  <p className="text-gray-900">{mail.sender}</p>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {mail.type === 'sent' ? 'To' : 'Recipient'}
